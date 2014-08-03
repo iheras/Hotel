@@ -1,0 +1,60 @@
+<?php
+
+function mymodule_menu() {
+  $items = array();
+  $items['mymodule/form'] = array(
+    'title' => t('My form'),
+    'page callback' => 'mymodule_form',
+    'access arguments' => array('access content'),
+    'description' => t('My form'),
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+function mymodule_form() {
+  return drupal_get_form('mymodule_my_form');
+}
+function mymodule_my_form($form_state) {
+  
+  $form['from'] = array(
+  '#type' => 'date_popup',
+  '#title' => t("From"),
+  '#required' => TRUE,
+  '#date_format' => 'd-m-Y',
+  '#attributes' => array('autocomplete' =>'off','readonly' => 'readonly'),
+  '#default_value' => date('d-m-Y'),
+ );
+  
+  $form['to'] = array(
+  '#type' => 'date_popup',
+  '#title' => t("To"),
+  '#required' => TRUE,
+  '#date_format' => 'd-m-Y',
+  '#attributes' => array('autocomplete' =>'off','readonly' => 'readonly'),
+  '#default_value' => date('d-m-Y'),
+ );
+  
+  $form['year_of_birth'] = array(
+    '#type' => 'textfield',
+    '#title' => "Year of birth",
+    '#description' => 'Format is "YYYY"',
+  );
+  
+  
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Submit',
+  );
+  return $form;
+}
+function mymodule_my_form_validate($form, &$form_state) {
+    $year_of_birth = $form_state['values']['year_of_birth'];
+    if ($year_of_birth && ($year_of_birth < 1900 || $year_of_birth > 2000)) {
+        form_set_error('year_of_birth', 'Enter a year between 1900 and 2000.');
+    }
+}
+// Adds a submit handler/function to our form to send a successful
+// completion message to the screen.
+function mymodule_my_form_submit($form, &$form_state) {
+    drupal_set_message(t('The form has been submitted.'));
+}
